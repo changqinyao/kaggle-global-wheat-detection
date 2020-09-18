@@ -2,7 +2,7 @@ import torch
 import torch.nn as nn
 from torch.nn.modules.utils import _pair
 
-from mmdet.ops.dcn import DeformConv, ModulatedDeformConv, deform_conv, modulated_deform_conv
+from mmdet.ops import DeformConv, ModulatedDeformConv, deform_conv, modulated_deform_conv
 
 
 class SEPCConv(DeformConv):

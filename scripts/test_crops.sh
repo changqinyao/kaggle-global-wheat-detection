@@ -12,6 +12,6 @@ python -m torch.distributed.launch --nproc_per_node="$GPUS" --master_port="$PORT
     "$PROJECT_ROOT"/gwd/test.py \
     --config "$CONFIG" \
     --checkpoint "$CHECKPOINT" \
-    --out /data/crops_fold0_predictions.pkl \
-    --ann-file /data/coco_crops_fold0.json \
-    --img-prefix /data/crops_fold0
+    --out /home/ubuntu/data/global-wheat-detection/crops_fold0_predictions.pkl \
+    --ann-file /home/ubuntu/data/global-wheat-detection/coco_crops_fold0.json \
+    --img-prefix /home/ubuntu/data/global-wheat-detection/crops_fold0

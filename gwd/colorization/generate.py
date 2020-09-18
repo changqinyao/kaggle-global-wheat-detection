@@ -3,6 +3,10 @@ import os
 import os.path as osp
 from glob import glob
 
+import os,sys
+
+sys.path.append("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/")
+
 import cv2
 import numpy as np
 import torch

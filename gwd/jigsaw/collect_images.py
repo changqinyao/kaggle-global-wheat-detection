@@ -26,7 +26,7 @@ IMG_SHAPE = (1024, 1024)
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--distances-pattern", default="/data/distances/*.npz")
+    parser.add_argument("--distances-pattern", default="/home/ubuntu/data/global-wheat-detection/distances/*.npz")
     return parser.parse_args()
 
 
@@ -185,7 +185,7 @@ def run(stage, source, left_matrix, top_matrix, image_paths, threshold):
                 print(info)
             success_mosaics.append(info)
             cv2.imwrite(
-                os.path.join("/data/mosaics", "_".join([osp.basename(x["path"]).split(".")[0] for x in info]) + ".jpg"),
+                os.path.join("/home/ubuntu/data/global-wheat-detection/mosaics", "_".join([osp.basename(x["path"]).split(".")[0] for x in info]) + ".jpg"),
                 mosaic,
             )
     return remaining_image_paths, success_mosaics
@@ -227,11 +227,11 @@ def main():
         source_w, source_h = SOURCE2SHAPE[source]
         assert len(remaining_image_paths) + source_w * source_h * len(source_mosaics) == n_samples
         for p in remaining_image_paths:
-            copyfile(p, osp.join("/data/mosaics", osp.basename(p)))
+            copyfile(p, osp.join("/home/ubuntu/data/global-wheat-detection/mosaics", osp.basename(p)))
         mosaics.extend(source_mosaics)
     import mmcv
 
-    mmcv.dump(mosaics, "/data/mosaics.json")
+    mmcv.dump(mosaics, "/home/ubuntu/data/global-wheat-detection/mosaics.json")
 
 
 if __name__ == "__main__":

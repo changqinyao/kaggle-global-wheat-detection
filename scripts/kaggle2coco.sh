@@ -1,6 +1,6 @@
 set -e
 
-for fold in /data/folds_v2/[0-9]*
+for fold in /home/ubuntu/data/global-wheat-detection/folds_v2/[0-9]*
 do
   for mode in mosaic tile
   do

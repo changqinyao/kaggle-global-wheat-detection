@@ -9,8 +9,13 @@ from PIL import Image
 from torchvision.utils import save_image
 from tqdm import tqdm
 
+import os,sys
+
+sys.path.append("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/")
+
 from gwd.stylize import net
 from gwd.stylize.function import adaptive_instance_normalization
+
 
 parser = argparse.ArgumentParser(
     description="This script applies the AdaIN style transfer method to arbitrary datasets."
@@ -133,8 +138,8 @@ def main():
     decoder.eval()
     vgg.eval()
 
-    decoder.load_state_dict(torch.load("/dumps/decoder.pth"))
-    vgg.load_state_dict(torch.load("/dumps/vgg_normalised.pth"))
+    decoder.load_state_dict(torch.load("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/dumps/decoder.pth"))
+    vgg.load_state_dict(torch.load("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/dumps/vgg_normalised.pth"))
     vgg = nn.Sequential(*list(vgg.children())[:31])
 
     vgg.to(device)

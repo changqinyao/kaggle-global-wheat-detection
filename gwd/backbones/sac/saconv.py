@@ -1,7 +1,7 @@
 import torch
 from mmcv.cnn import CONV_LAYERS
 
-from mmdet.ops.dcn import deform_conv
+from mmcv.ops.deform_conv import deform_conv2d
 
 from .conv_aws import ConvAWS2d
 
@@ -64,7 +64,7 @@ class SAConv2d(ConvAWS2d):
         weight = self._get_weight(self.weight)
         if self.use_deform:
             offset = self.offset_s(avg_x)
-            out_s = deform_conv(x, offset, weight, self.stride, self.padding, self.dilation, self.groups, 1)
+            out_s = deform_conv2d(x, offset, weight, self.stride, self.padding, self.dilation, self.groups, 1)
         else:
             out_s = super()._conv_forward(x, weight)
         ori_p = self.padding
@@ -74,7 +74,7 @@ class SAConv2d(ConvAWS2d):
         weight = weight + self.weight_diff
         if self.use_deform:
             offset = self.offset_l(avg_x)
-            out_l = deform_conv(x, offset, weight, self.stride, self.padding, self.dilation, self.groups, 1)
+            out_l = deform_conv2d(x, offset, weight, self.stride, self.padding, self.dilation, self.groups, 1)
         else:
             out_l = super()._conv_forward(x, weight)
         out = switch * out_s + (1 - switch) * out_l

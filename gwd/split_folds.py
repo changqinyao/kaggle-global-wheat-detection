@@ -14,10 +14,10 @@ VAL_SOURCES = ["usask_1", "ethz_1"]
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mosaic_path", default="/data/train_mosaic.csv")
-    parser.add_argument("--annotation_path", default="/data/train.csv")
+    parser.add_argument("--mosaic_path", default="/home/ubuntu/data/global-wheat-detection/train_mosaic.csv")
+    parser.add_argument("--annotation_path", default="/home/ubuntu/data/global-wheat-detection/train.csv")
     parser.add_argument("--n_splits", type=int, default=5)
-    parser.add_argument("--output_root", default="/data/folds_v2")
+    parser.add_argument("--output_root", default="/home/ubuntu/data/global-wheat-detection/folds_v2")
     return parser.parse_args()
 
 

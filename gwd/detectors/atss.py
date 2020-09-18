@@ -4,7 +4,7 @@ from mmdet.core import bbox2result  # , bbox_mapping_back
 from mmdet.core.bbox import bbox_flip
 from mmdet.models.builder import DETECTORS
 from mmdet.models.detectors.single_stage import SingleStageDetector
-from mmdet.ops.nms import batched_nms
+from mmcv.ops import batched_nms
 
 
 def bbox_rot90_back(bboxes, img_shape, factor=0):

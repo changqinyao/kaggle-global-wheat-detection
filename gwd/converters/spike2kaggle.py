@@ -11,10 +11,10 @@ from gwd.converters import kaggle2coco
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--image-pattern", default="/data/SPIKE_images/*jpg")
-    parser.add_argument("--annotation-root", default="/data/SPIKE_annotations")
-    parser.add_argument("--kaggle_output_path", default="/data/spike.csv")
-    parser.add_argument("--coco_output_path", default="/data/coco_spike.json")
+    parser.add_argument("--image-pattern", default="/home/ubuntu/data/SPIKE/SPIKE Dataset/positive/*jpg")
+    parser.add_argument("--annotation-root", default="/home/ubuntu/data/SPIKE/SPIKE Dataset/positive")
+    parser.add_argument("--kaggle_output_path", default="/home/ubuntu/data/SPIKE/SPIKE Dataset/spike.csv")
+    parser.add_argument("--coco_output_path", default="/home/ubuntu/data/SPIKE/SPIKE Dataset/coco_spike.json")
     return parser.parse_args()
 
 

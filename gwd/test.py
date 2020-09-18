@@ -9,7 +9,7 @@ from mmcv.parallel import MMDataParallel, MMDistributedDataParallel
 from mmcv.runner import get_dist_info, init_dist, load_checkpoint
 from mmcv.utils import print_log
 
-from gwd.datasets.wheat_detection import WheatDataset
+from gwd.datasets.wheat_detection import WheatDataset1
 from gwd.misc.logging import get_logger
 from mmdet.apis import multi_gpu_test, single_gpu_test
 from mmdet.core import wrap_fp16_model
@@ -52,7 +52,7 @@ def parse_args():
     )
     parser.add_argument("--options", nargs="+", action=DictAction, help="arguments in dict")
     parser.add_argument(
-        "--launcher", choices=["none", "pytorch", "slurm", "mpi"], default="pytorch", help="job launcher"
+        "--launcher", choices=["none", "pytorch", "slurm", "mpi"], default="none", help="job launcher"
     )
     parser.add_argument("--local_rank", type=int, default=0)
     parser.add_argument("--score_thr", type=float)
@@ -84,7 +84,7 @@ def main(
     local_rank=0,
     score_thr=None,
     iou_thr=None,
-) -> Tuple[list, WheatDataset]:
+) -> Tuple[list, WheatDataset1]:
     logger = get_logger("inference", log_file=log_file, log_mode="a")
     assert out or eval or format_only or show or show_dir, (
         "Please specify at least one operation (save/eval/format/show the "

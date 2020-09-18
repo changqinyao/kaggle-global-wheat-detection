@@ -14,9 +14,9 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--annotation-path", default="/data/train.csv")
-    parser.add_argument("--img-root", default="/data/train")
-    parser.add_argument("--output-root", default="/data/distances")
+    parser.add_argument("--annotation-path", default="/home/ubuntu/data/global-wheat-detection/train.csv")
+    parser.add_argument("--img-root", default="/home/ubuntu/data/global-wheat-detection/train")
+    parser.add_argument("--output-root", default="/home/ubuntu/data/global-wheat-detection/distances")
     return parser.parse_args()
 
 

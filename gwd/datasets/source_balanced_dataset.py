@@ -4,12 +4,12 @@ from collections import defaultdict
 from mmdet.datasets.builder import DATASETS
 from mmdet.datasets.dataset_wrappers import ClassBalancedDataset
 
-from .wheat_detection import WheatDataset
+from .wheat_detection import WheatDataset1
 
 
 @DATASETS.register_module()
 class SourceBalancedDataset(ClassBalancedDataset):
-    def _get_repeat_factors(self, dataset: WheatDataset, repeat_thr: float):
+    def _get_repeat_factors(self, dataset: WheatDataset1, repeat_thr: float):
         # 1. For each source s, compute the fraction # of images
         #   that contain it: f(s)
         source_freq = defaultdict(float)

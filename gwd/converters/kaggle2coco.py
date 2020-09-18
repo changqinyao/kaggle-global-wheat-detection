@@ -10,8 +10,8 @@ from tqdm import tqdm
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--annotation_path", default="/data/folds_v2/0/clean_tile_train.csv")
-    parser.add_argument("--output_path", default="/data/folds_v2/0/coco_clean_tile_train.json")
+    parser.add_argument("--annotation_path", default="/home/ubuntu/data/global-wheat-detection/folds_v2/0/mosaic_train.csv")
+    parser.add_argument("--output_path", default="/home/ubuntu/data/global-wheat-detection/folds_v2/0/mosaic_train.json")
     return parser.parse_args()
 
 

@@ -19,10 +19,10 @@ from .datasets.pipelines.transforms import (
     RandomRotate90,
 )
 from .datasets.source_balanced_dataset import SourceBalancedDataset
-from .datasets.wheat_detection import WheatDataset
+from .datasets.wheat_detection import WheatDataset1
 from .dense_heads.gfl_head import GFLSEPCHead
 from .detectors.atss import ModifiedATSS
 from .detectors.rfp import RecursiveFeaturePyramid
 from .losses.cross_entropy_loss import LabelSmoothCrossEntropyLoss
-from .necks.sepc import SEPC
+# from .necks.sepc import SEPC
 from .patches import build_dataset

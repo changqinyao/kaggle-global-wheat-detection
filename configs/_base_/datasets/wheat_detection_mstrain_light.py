@@ -53,10 +53,16 @@ albu_train_transforms = [
     dict(type="RandomBBoxesSafeCrop", num_rate=(0.5, 1.0), erosion_rate=0.2),
 ]
 
+path_json=['/home/ubuntu/data/global-wheat-detection/folds_v2/0/coco_tile_train.json',
+'/home/ubuntu/data/global-wheat-detection/folds_v2/0/coco_pseudo_train.json',
+'/home/ubuntu/data/global-wheat-detection/coco_spike.json'
+]
+
 train_pipeline = [
     dict(type="MultipleLoadImageFromFile"),
     dict(type="LoadAnnotations", with_bbox=True),
-    dict(type="Mosaic", p=0.25, min_buffer_size=4, pad_val=img_norm_cfg["mean"][::-1]),
+    # dict(type="Mosaic", p=0.25, min_buffer_size=4, pad_val=img_norm_cfg["mean"][::-1]),
+    dict(type='Mosaic_mixup_kaggle',json_path=path_json,pad_val=img_norm_cfg["mean"][::-1]),
     dict(
         type="Albumentations",
         transforms=albu_train_transforms,
@@ -68,11 +74,11 @@ train_pipeline = [
         min_size=4,
         max_aspect_ratio=15,
     ),
-    dict(type="Mixup", p=0.25, min_buffer_size=2, pad_val=img_norm_cfg["mean"][::-1]),
+    # dict(type="Mixup", p=0.25, min_buffer_size=2, pad_val=img_norm_cfg["mean"][::-1]),
     dict(type="RandomFlip", flip_ratio=0.5),
     dict(
         type="Resize",
-        img_scale=[(768 + 32 * i, 768 + 32 * i) for i in range(25)],
+        img_scale=[(640+32*i,640+32*i) for i in range(11)],
         multiscale_mode="value",
         keep_ratio=True,
     ),
@@ -82,7 +88,7 @@ train_pipeline = [
     dict(type="Collect", keys=["img", "gt_bboxes", "gt_labels"]),
 ]
 
-data_root = "/data/"
+data_root = "/home/ubuntu/data/global-wheat-detection/"
 data = dict(
     train=dict(
         pipeline=train_pipeline,

@@ -18,8 +18,8 @@ model = dict(
         stage_with_sac=(False, True, True, True),
         norm_cfg=dict(type="BN", requires_grad=True),
         style="pytorch",
-        gen_attention=dict(spatial_range=-1, num_heads=8, attention_type="0010", kv_stride=2),
-        stage_with_gen_attention=[[], [], [0, 1, 2, 3, 4, 5], [0, 1, 2]],
+        # gen_attention=dict(spatial_range=-1, num_heads=8, attention_type="0010", kv_stride=2),
+        # stage_with_gen_attention=[[], [], [0, 1, 2, 3, 4, 5], [0, 1, 2]],
     ),
 )
 

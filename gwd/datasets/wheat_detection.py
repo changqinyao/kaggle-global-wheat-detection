@@ -17,7 +17,7 @@ def calc_pseudo_confidence(sample_scores, pseudo_score_threshold):
 
 
 @DATASETS.register_module()
-class WheatDataset(CocoDataset):
+class WheatDataset1(CocoDataset):
     CLASSES = ("wheat",)
 
     def evaluate(self, results, logger=None, iou_thrs=(0.5, 0.55, 0.6, 0.65, 0.7, 0.75), **kwargs):

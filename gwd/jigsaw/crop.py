@@ -16,10 +16,10 @@ OFFSET_SIZE = 512
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--annotation-path", default="/data/folds_v2/0/mosaic_train.csv")
-    parser.add_argument("--img-root", default="/data/mosaics")
-    parser.add_argument("--output-root", default="/data/crops_fold0")
-    parser.add_argument("--output-path", default="/data/coco_crops_fold0.json")
+    parser.add_argument("--annotation-path", default="/home/ubuntu/data/global-wheat-detection/folds_v2/0/mosaic_train.csv")
+    parser.add_argument("--img-root", default="/home/ubuntu/data/global-wheat-detection/mosaics")
+    parser.add_argument("--output-root", default="/home/ubuntu/data/global-wheat-detection/crops_fold0")
+    parser.add_argument("--output-path", default="/home/ubuntu/data/global-wheat-detection/coco_crops_fold0.json")
     return parser.parse_args()
 
 

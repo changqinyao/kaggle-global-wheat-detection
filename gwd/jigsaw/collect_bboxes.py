@@ -11,9 +11,9 @@ IMG_SIZE = 1024
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--mosaics-path", default="/data/mosaics.json")
-    parser.add_argument("--annotation-path", default="/data/train.csv")
-    parser.add_argument("--output-path", default="/data/train_mosaic.csv")
+    parser.add_argument("--mosaics-path", default="/home/ubuntu/data/global-wheat-detection/mosaics.json")
+    parser.add_argument("--annotation-path", default="/home/ubuntu/data/global-wheat-detection/train.csv")
+    parser.add_argument("--output-path", default="/home/ubuntu/data/global-wheat-detection/train_mosaic.csv")
     return parser.parse_args()
 
 

@@ -10,6 +10,11 @@ import torch
 from mmcv import Config, DictAction
 from mmcv.runner import init_dist
 
+
+import os,sys
+
+sys.path.append("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/")
+
 import gwd  # noqa F401
 from gwd.patches import build_dataset
 from mmdet import __version__
@@ -90,7 +95,7 @@ def main(
         cfg.work_dir = work_dir
     elif cfg.get("work_dir", None) is None:
         # use config filename as default work_dir if cfg.work_dir is None
-        cfg.work_dir = osp.join("/dumps/work_dirs", osp.splitext(osp.basename(config))[0], str(fold))
+        cfg.work_dir = osp.join("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/mosaic/work_dirs", osp.splitext(osp.basename(config))[0], str(fold))
     if resume_from is not None:
         cfg.resume_from = resume_from
     if load_from is not None:
