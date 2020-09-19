@@ -334,7 +334,7 @@ class Mosaic_mixup_kaggle(object):
     Mosaic or mixup
     """
 
-    def __init__(self, json_path, prob=0.67, mprob=0.5, min_size=4, max_aspect_ratio=10, pad_val=0):
+    def __init__(self, json_path, prob=0.67, mprob=0.5, min_size=4, max_aspect_ratio=15, pad_val=0):
         self.json_path = json_path
         self.prob = prob
         self.mprob = mprob

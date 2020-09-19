@@ -62,7 +62,7 @@ train_pipeline = [
     dict(type="MultipleLoadImageFromFile"),
     dict(type="LoadAnnotations", with_bbox=True),
     # dict(type="Mosaic", p=0.25, min_buffer_size=4, pad_val=img_norm_cfg["mean"][::-1]),
-    dict(type='Mosaic_mixup_kaggle',json_path=path_json,pad_val=img_norm_cfg["mean"][::-1]),
+    dict(type='Mosaic_mixup_kaggle',json_path=path_json,pad_val=img_norm_cfg["mean"][::-1],min_size=4, max_aspect_ratio=15),
     dict(
         type="Albumentations",
         transforms=albu_train_transforms,
@@ -78,7 +78,7 @@ train_pipeline = [
     dict(type="RandomFlip", flip_ratio=0.5),
     dict(
         type="Resize",
-        img_scale=[(640+32*i,640+32*i) for i in range(11)],
+        img_scale=[(640+32*i,640+32*i) for i in range(10)],
         multiscale_mode="value",
         keep_ratio=True,
     ),

@@ -11,7 +11,7 @@ from tqdm import tqdm
 
 import os,sys
 
-sys.path.append("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/")
+sys.path.append("/content/kaggle-global-wheat-detection")
 
 from gwd.stylize import net
 from gwd.stylize.function import adaptive_instance_normalization
@@ -138,8 +138,8 @@ def main():
     decoder.eval()
     vgg.eval()
 
-    decoder.load_state_dict(torch.load("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/dumps/decoder.pth"))
-    vgg.load_state_dict(torch.load("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/dumps/vgg_normalised.pth"))
+    decoder.load_state_dict(torch.load("/content/dumps/权重/decoder.pth"))
+    vgg.load_state_dict(torch.load("/content/dumps/权重/vgg_normalised.pth"))
     vgg = nn.Sequential(*list(vgg.children())[:31])
 
     vgg.to(device)

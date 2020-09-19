@@ -3,9 +3,8 @@ import os
 import os.path as osp
 from glob import glob
 
-import os,sys
-
-sys.path.append("/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/")
+import sys
+sys.path.append('/content/kaggle-global-wheat-detection')
 
 import cv2
 import numpy as np
@@ -22,7 +21,7 @@ IMG_SIZE = 1024
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("--img_pattern", default="/data/SPIKE_Dataset/images/*jpg")
-    parser.add_argument("--weights_path", default="/dumps/pix2pix_gen.pth")
+    parser.add_argument("--weights_path", default="/content/dumps/权重/pix2pix_gen.pth")
     parser.add_argument("--output_root", default="/data/SPIKE_Dataset/colored_images")
     return parser.parse_args()
 
