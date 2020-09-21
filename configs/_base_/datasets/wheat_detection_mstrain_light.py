@@ -1,7 +1,6 @@
 _base_ = "./wheat_detection_mstrain.py"
 
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-# img_norm_cfg = dict(mean=[102.9801, 115.9465, 122.7717], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 albu_train_transforms = [
     dict(type="RandomRotate90", p=1.0),
@@ -63,18 +62,18 @@ train_pipeline = [
     dict(type="MultipleLoadImageFromFile"),
     dict(type="LoadAnnotations", with_bbox=True),
     # dict(type="Mosaic", p=0.25, min_buffer_size=4, pad_val=img_norm_cfg["mean"][::-1]),
-    # dict(type='Mosaic_mixup_kaggle',json_path=path_json,pad_val=img_norm_cfg["mean"][::-1],min_size=4, max_aspect_ratio=15),
-    # dict(
-    #     type="Albumentations",
-    #     transforms=albu_train_transforms,
-    #     keymap=dict(img="image", gt_masks="masks", gt_bboxes="bboxes"),
-    #     update_pad_shape=False,
-    #     skip_img_without_anno=True,
-    #     bbox_params=dict(type="BboxParams", format="pascal_voc", label_fields=["labels"]),
-    #     min_visibility=0.3,
-    #     min_size=4,
-    #     max_aspect_ratio=15,
-    # ),
+    dict(type='Mosaic_mixup_kaggle',json_path=path_json,pad_val=img_norm_cfg["mean"][::-1],min_size=4, max_aspect_ratio=15),
+    dict(
+        type="Albumentations",
+        transforms=albu_train_transforms,
+        keymap=dict(img="image", gt_masks="masks", gt_bboxes="bboxes"),
+        update_pad_shape=False,
+        skip_img_without_anno=True,
+        bbox_params=dict(type="BboxParams", format="pascal_voc", label_fields=["labels"]),
+        min_visibility=0.3,
+        min_size=4,
+        max_aspect_ratio=15,
+    ),
     # dict(type="Mixup", p=0.25, min_buffer_size=2, pad_val=img_norm_cfg["mean"][::-1]),
     dict(type="RandomFlip", flip_ratio=0.5),
     dict(

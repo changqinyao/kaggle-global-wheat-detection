@@ -2,7 +2,7 @@ dataset_type = "WheatDataset1"
 data_root = "/home/ubuntu/data/global-wheat-detection/"
 
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
-# img_norm_cfg = dict(mean=[102.9801, 115.9465, 122.7717], std=[1.0, 1.0, 1.0], to_rgb=False)
+
 
 albu_train_transforms = [
     dict(type="RandomRotate90", p=1.0),
