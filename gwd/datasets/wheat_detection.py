@@ -4,7 +4,7 @@ import mmcv
 import numpy as np
 import pandas as pd
 
-from gwd.datasets.evaluation import kaggle_map
+from gwd.datasets.evaluation import kaggle_map,kaggle_map_yolov3
 from mmdet.datasets.builder import DATASETS
 from mmdet.datasets.coco import CocoDataset
 
@@ -22,8 +22,8 @@ class WheatDataset1(CocoDataset):
 
     def evaluate(self, results, logger=None, iou_thrs=(0.5, 0.55, 0.6, 0.65, 0.7, 0.75), **kwargs):
         annotations = [self.get_ann_info(i) for i in range(len(self))]
-        mean_ap, _ = kaggle_map(results, annotations, iou_thrs=iou_thrs, logger=logger)
-        return dict(mAP=mean_ap)
+        mp, mr, map, mf1 = kaggle_map_yolov3(results, annotations, iou_thrs=iou_thrs, logger=logger)
+        return dict(mp=mp, mR=mr, mAP=map, mAP50=mf1)
 
     def format_results(self, results, output_path=None, **kwargs):
         assert isinstance(results, list), "results must be a list"

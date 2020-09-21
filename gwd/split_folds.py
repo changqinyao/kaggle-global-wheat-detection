@@ -35,6 +35,9 @@ def main():
     args = parse_args()
     os.makedirs(args.output_root, exist_ok=True)
     tile_annotations = pd.read_csv(args.annotation_path)
+    tile_annotations["num_of_bboxes"] = tile_annotations["image_id"].map(
+        tile_annotations["image_id"].value_counts()
+    )
     mosaic_annotations = pd.read_csv(args.mosaic_path, converters={"bbox": ast.literal_eval})
     mosaic_annotations["num_of_bboxes"] = mosaic_annotations["image_id"].map(
         mosaic_annotations["image_id"].value_counts()

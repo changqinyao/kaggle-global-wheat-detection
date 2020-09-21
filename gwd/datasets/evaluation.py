@@ -114,3 +114,185 @@ def kaggle_map(
 
     print_log(f"\nKaggle mAP: {mean_ap}", logger=logger)
     return mean_ap, eval_results
+
+import torch
+
+def box_iou(box1, box2):
+    # https://github.com/pytorch/vision/blob/master/torchvision/ops/boxes.py
+    """
+    Return intersection-over-union (Jaccard index) of boxes.
+    Both sets of boxes are expected to be in (x1, y1, x2, y2) format.
+    Arguments:
+        box1 (Tensor[N, 4])
+        box2 (Tensor[M, 4])
+    Returns:
+        iou (Tensor[N, M]): the NxM matrix containing the pairwise
+            IoU values for every element in boxes1 and boxes2
+    """
+
+    def box_area(box):
+        # box = 4xn
+        return (box[2] - box[0]) * (box[3] - box[1])
+
+    area1 = box_area(box1.t())
+    area2 = box_area(box2.t())
+
+    # inter(N,M) = (rb(N,M,2) - lt(N,M,2)).clamp(0).prod(2)
+    inter = (torch.min(box1[:, None, 2:], box2[:, 2:]) - torch.max(box1[:, None, :2], box2[:, :2])).clamp(0).prod(2)
+    return inter / (area1[:, None] + area2 - inter)  # iou = inter / (area1 + area2 - inter)
+
+def compute_ap(recall, precision):
+    """ Compute the average precision, given the recall and precision curves.
+    Source: https://github.com/rbgirshick/py-faster-rcnn.
+    # Arguments
+        recall:    The recall curve (list).
+        precision: The precision curve (list).
+    # Returns
+        The average precision as computed in py-faster-rcnn.
+    """
+
+    # Append sentinel values to beginning and end
+    mrec = np.concatenate(([0.], recall, [min(recall[-1] + 1E-3, 1.)]))
+    mpre = np.concatenate(([0.], precision, [0.]))
+
+    # Compute the precision envelope
+    mpre = np.flip(np.maximum.accumulate(np.flip(mpre)))
+
+    # Integrate area under curve
+    method = 'interp'  # methods: 'continuous', 'interp'
+    if method == 'interp':
+        x = np.linspace(0, 1, 101)  # 101-point interp (COCO)
+        ap = np.trapz(np.interp(x, mrec, mpre), x)  # integrate
+    else:  # 'continuous'
+        i = np.where(mrec[1:] != mrec[:-1])[0]  # points where x axis (recall) changes
+        ap = np.sum((mrec[i + 1] - mrec[i]) * mpre[i + 1])  # area under curve
+
+    return ap
+
+
+def ap_per_class(tp, conf, pred_cls, target_cls):
+    """ Compute the average precision, given the recall and precision curves.
+    Source: https://github.com/rafaelpadilla/Object-Detection-Metrics.
+    # Arguments
+        tp:    True positives (nparray, nx1 or nx10).
+        conf:  Objectness value from 0-1 (nparray).
+        pred_cls: Predicted object classes (nparray).
+        target_cls: True object classes (nparray).
+    # Returns
+        The average precision as computed in py-faster-rcnn.
+    """
+
+    # Sort by objectness
+    i = np.argsort(-conf)
+    tp, conf, pred_cls = tp[i], conf[i], pred_cls[i]
+
+    # Find unique classes
+    unique_classes = np.unique(target_cls)
+
+    # Create Precision-Recall curve and compute AP for each class
+    pr_score = 0.1  # score to evaluate P and R https://github.com/ultralytics/yolov3/issues/898
+    s = [unique_classes.shape[0], tp.shape[1]]  # number class, number iou thresholds (i.e. 10 for mAP0.5...0.95)
+    ap, p, r = np.zeros(s), np.zeros(s), np.zeros(s)
+    for ci, c in enumerate(unique_classes):
+        i = pred_cls == c
+        n_gt = (target_cls == c).sum()  # Number of ground truth objects
+        n_p = i.sum()  # Number of predicted objects
+
+        if n_p == 0 or n_gt == 0:
+            continue
+        else:
+            # Accumulate FPs and TPs
+            fpc = (1 - tp[i]).cumsum(0)
+            tpc = tp[i].cumsum(0)
+
+            # Recall
+            recall = tpc / (n_gt + 1e-16)  # recall curve
+            r[ci] = np.interp(-pr_score, -conf[i], recall[:, 0])  # r at pr_score, negative x, xp because xp decreases
+
+            # Precision
+            precision = tpc / (tpc + fpc)  # precision curve
+            p[ci] = np.interp(-pr_score, -conf[i], precision[:, 0])  # p at pr_score
+
+            # AP from recall-precision curve
+            for j in range(tp.shape[1]):
+                ap[ci, j] = compute_ap(recall[:, j], precision[:, j])
+
+            # Plot
+            # fig, ax = plt.subplots(1, 1, figsize=(5, 5))
+            # ax.plot(recall, precision)
+            # ax.set_xlabel('Recall')
+            # ax.set_ylabel('Precision')
+            # ax.set_xlim(0, 1.01)
+            # ax.set_ylim(0, 1.01)
+            # fig.tight_layout()
+            # fig.savefig('PR_curve.png', dpi=300)
+
+    # Compute F1 score (harmonic mean of precision and recall)
+    f1 = 2 * p * r / (p + r + 1e-16)
+
+    return p, r, ap, f1, unique_classes.astype('int32')
+
+
+
+def kaggle_map_yolov3(
+    det_results, annotations, iou_thrs=(0.5, 0.55, 0.6, 0.65, 0.7, 0.75), logger=None, n_jobs=4, by_sample=False
+):
+    iouv = torch.tensor(iou_thrs)
+    niou = len(iouv)
+    seen = 0
+    p, r, f1, mp, mr, map, mf1, t0, t1 = 0., 0., 0., 0., 0., 0., 0., 0., 0.
+    jdict, stats, ap, ap_class = [], [], [], []
+    for si, pred in enumerate(det_results):
+        pred = torch.from_numpy(pred[0]) if pred else None
+        tcls = torch.from_numpy(annotations[si]['labels'])
+        tbox = torch.from_numpy(annotations[si]['bboxes'])
+        nl = len(tcls)
+        seen += 1
+
+        if pred is None:
+            if nl:
+                stats.append((torch.zeros(0, niou, dtype=torch.bool), torch.Tensor(), torch.Tensor(), tcls))
+            continue
+
+        # Append to text file
+        # with open('test.txt', 'a') as file:
+        #    [file.write('%11.5g' * 7 % tuple(x) + '\n') for x in pred]
+
+        # Assign all predictions as incorrect
+        correct = torch.zeros(pred.shape[0], niou, dtype=torch.bool)
+        if nl:
+            detected = []  # target indices
+
+            # Per target class
+            for cls in np.unique(tcls):
+                ti = (cls == tcls).nonzero().view(-1)  # prediction indices
+                pi = torch.tensor([i for i in range(len(pred))])  # target indices
+
+                # Search for detections
+                if pi.shape[0]:
+                    # Prediction to target ious
+                    ious, i = box_iou(pred[pi, :4], tbox[ti]).max(1)  # best ious, indices
+
+                    # Append detections
+                    for j in (ious > iouv[0]).nonzero():
+                        d = ti[i[j]]  # detected target
+                        if d not in detected:
+                            detected.append(d)
+                            correct[pi[j]] = ious[j] > iouv  # iou_thres is 1xn
+                            if len(detected) == nl:  # all targets already located in image
+                                break
+
+        # Append statistics (correct, conf, pcls, tcls)
+        pcls = torch.zeros(pred.shape[0])
+        stats.append((correct, pred[:, 4], pcls, tcls))
+
+    stats = [np.concatenate(x, 0) for x in zip(*stats)]
+    if len(stats):
+        p, r, ap, f1, ap_class = ap_per_class(*stats)
+        if niou > 1:
+            p, r, ap, f1 = p[:, 0], r[:, 0], ap.mean(1), ap[:, 0]  # [P, R, AP@0.5:0.95, AP@0.5]
+        mp, mr, map, mf1 = p.mean(), r.mean(), ap.mean(), f1.mean()
+        nt = np.bincount(stats[3].astype(np.int64), minlength=1)  # number of targets per class
+    else:
+        nt = torch.zeros(1)
+    return mp, mr, map, mf1

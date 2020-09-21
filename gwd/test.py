@@ -19,8 +19,8 @@ from mmdet.models import build_detector
 
 def parse_args():
     parser = argparse.ArgumentParser(description="MMDet test (and eval) a model")
-    parser.add_argument("--config", help="test config file path")
-    parser.add_argument("--checkpoint", help="checkpoint file")
+    parser.add_argument("config", help="test config file path")
+    parser.add_argument("checkpoint", help="checkpoint file")
     parser.add_argument("--img-prefix")
     parser.add_argument("--ann-file")
     parser.add_argument("--flip", action="store_true")

@@ -2,6 +2,7 @@ dataset_type = "WheatDataset1"
 data_root = "/home/ubuntu/data/global-wheat-detection/"
 
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+# img_norm_cfg = dict(mean=[102.9801, 115.9465, 122.7717], std=[1.0, 1.0, 1.0], to_rgb=False)
 
 albu_train_transforms = [
     dict(type="RandomRotate90", p=1.0),
@@ -71,7 +72,7 @@ train_pipeline = [
     dict(type="RandomFlip", flip_ratio=0.5),
     dict(
         type="Resize",
-        img_scale=[(768 + 32 * i, 768 + 32 * i) for i in range(25)],
+        img_scale=[(1024,1024)],
         multiscale_mode="value",
         keep_ratio=True,
     ),
@@ -98,13 +99,13 @@ val_pipeline = [
     ),
 ]
 
+
 test_pipeline = [
     dict(type="LoadImageFromFile"),
     dict(
-        type="ModifiedMultiScaleFlipAug",
-        img_scale=[(1408, 1408), (1536, 1536)],
-        flip=True,
-        flip_direction=["horizontal", "vertical"],
+        type="MultiScaleFlipAug",
+        img_scale=(800, 800),
+        flip=False,
         transforms=[
             dict(type="Resize", keep_ratio=True),
             dict(type="RandomFlip"),
@@ -115,6 +116,23 @@ test_pipeline = [
         ],
     ),
 ]
+# test_pipeline = [
+#     dict(type="LoadImageFromFile"),
+#     dict(
+#         type="ModifiedMultiScaleFlipAug",
+#         img_scale=[(1408, 1408), (1536, 1536)],
+#         flip=True,
+#         flip_direction=["horizontal", "vertical"],
+#         transforms=[
+#             dict(type="Resize", keep_ratio=True),
+#             dict(type="RandomFlip"),
+#             dict(type="Normalize", **img_norm_cfg),
+#             dict(type="Pad", size_divisor=32),
+#             dict(type="ImageToTensor", keys=["img"]),
+#             dict(type="Collect", keys=["img"]),
+#         ],
+#     ),
+# ]
 
 data = dict(
     samples_per_gpu=4,
