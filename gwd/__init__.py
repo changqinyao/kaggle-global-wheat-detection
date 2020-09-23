@@ -21,6 +21,7 @@ from .datasets.pipelines.transforms import (
 from .datasets.source_balanced_dataset import SourceBalancedDataset
 from .datasets.wheat_detection import WheatDataset1
 from .dense_heads.gfl_head import GFLSEPCHead
+from .dense_heads.fcos_head import FCOSHead_TTA
 from .detectors.atss import ModifiedATSS
 from .detectors.rfp import RecursiveFeaturePyramid
 from .losses.cross_entropy_loss import LabelSmoothCrossEntropyLoss

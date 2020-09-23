@@ -7,28 +7,30 @@ from gwd.converters import images2coco
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--img_prefix", default="/data/test")
+    parser.add_argument("--img_prefix", default="/home/ubuntu/data/global-wheat-detection/test")
     parser.add_argument("--flip", action="store_true")
-    parser.add_argument("--ann_file", default="/data/test_coco.json")
+    parser.add_argument("--ann_file", default="/home/ubuntu/data/global-wheat-detection/test_coco.json")
     parser.add_argument(
         "--configs",
         default=[
-            "configs/rfp_pseudo/rfp_r50_ga_mstrain_pseudo_stage1.py",
-            "configs/universe_spike/universe_r50_mstrain_spike_stage1.py",
+            "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/configs/detectors/detectors_r50_ga_mstrain_stage0.py",
+            # "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/configs/detectors/detectors_r50_ga_mstrain_stage0.py"
+            # "configs/universe_spike/universe_r50_mstrain_spike_stage1.py",
         ],
         nargs="+",
     )
     parser.add_argument(
         "--checkpoints",
         default=[
-            "/dumps/rfp_r50_ga_mstrain_pseudo_stage1_epoch_10.pth",
-            "/dumps/universe_r50_mstrain_spike_stage1_epoch_12.pth",
+            "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/mosaic/work_dirs/detectors_r50_ga_mstrain_stage0/0/epoch_48.pth",
+            # "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/mosaic/work_dirs/detectors_r50_ga_mstrain_stage0/0/epoch_44.pth"
+            # "/dumps/universe_r50_mstrain_spike_stage1_epoch_12.pth",
         ],
         nargs="+",
     )
-    parser.add_argument("--weights", default=[0.75, 0.25], type=float, nargs="+")
-    parser.add_argument("--submission_path", default="/data/test_submission.csv")
-    parser.add_argument("--pseudo_path", default="/data/coco_pseudo_test.json")
+    parser.add_argument("--weights", default=[3, 1], type=float, nargs="+")
+    parser.add_argument("--submission_path", default="/home/ubuntu/data/test_submission.csv")
+    parser.add_argument("--pseudo_path", default="/home/ubuntu/data/coco_pseudo_test.json")
     parser.add_argument("--iou_thr", default=0.55, type=float)
     parser.add_argument("--score_thr", default=0.45, type=float)
     return parser.parse_args()

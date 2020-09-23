@@ -77,7 +77,7 @@ train_pipeline = [
         keep_ratio=True,
     ),
     dict(type="Normalize", **img_norm_cfg),
-    dict(type="Pad", size_divisor=32),
+    dict(type="Pad", size_divisor=32,pad_val=img_norm_cfg["mean"][::-1]),
     dict(type="DefaultFormatBundle"),
     dict(type="Collect", keys=["img", "gt_bboxes", "gt_labels"]),
 ]
@@ -92,7 +92,7 @@ val_pipeline = [
             dict(type="Resize", keep_ratio=True),
             dict(type="RandomFlip"),
             dict(type="Normalize", **img_norm_cfg),
-            dict(type="Pad", size_divisor=32),
+            dict(type="Pad", size_divisor=32,pad_val=img_norm_cfg["mean"][::-1]),
             dict(type="ImageToTensor", keys=["img"]),
             dict(type="Collect", keys=["img"]),
         ],
@@ -104,8 +104,9 @@ test_pipeline = [
     dict(type="LoadImageFromFile"),
     dict(
         type="MultiScaleFlipAug",
-        img_scale=(800, 800),
-        flip=False,
+        img_scale=[(1216,1216)],
+        flip=True,
+        flip_direction=["horizontal", "vertical"],
         transforms=[
             dict(type="Resize", keep_ratio=True),
             dict(type="RandomFlip"),
@@ -120,14 +121,14 @@ test_pipeline = [
 #     dict(type="LoadImageFromFile"),
 #     dict(
 #         type="ModifiedMultiScaleFlipAug",
-#         img_scale=[(1408, 1408), (1536, 1536)],
+#         img_scale=[(800, 800), (864, 864)],
 #         flip=True,
 #         flip_direction=["horizontal", "vertical"],
 #         transforms=[
 #             dict(type="Resize", keep_ratio=True),
 #             dict(type="RandomFlip"),
 #             dict(type="Normalize", **img_norm_cfg),
-#             dict(type="Pad", size_divisor=32),
+#             dict(type="Pad", size_divisor=32,pad_val=img_norm_cfg["mean"][::-1]),
 #             dict(type="ImageToTensor", keys=["img"]),
 #             dict(type="Collect", keys=["img"]),
 #         ],
