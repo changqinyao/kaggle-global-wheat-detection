@@ -49,6 +49,6 @@ train_cfg = dict(
 test_cfg = dict(
     nms_pre=1000,
     min_bbox_size=0,
-    score_thr=0.05,
-    nms=dict(type='nms', iou_threshold=0.5),
+    score_thr=0.37,
+    nms=dict(type='nms', iou_threshold=0.45),
     max_per_img=200)

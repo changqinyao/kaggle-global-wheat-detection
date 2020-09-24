@@ -39,7 +39,7 @@ def calc_tpfpfn(det_bboxes, gt_bboxes, iou_thr=0.5):
         if len(uncovered_ious):
             iou_argmax = uncovered_ious.argmax()
             iou_max = uncovered_ious[iou_argmax]
-            if iou_max >= iou_thr:
+            if iou_max > iou_thr:
                 gt_covered[[x[iou_argmax] for x in np.where(gt_covered == 0)]] = True
                 tp += 1
             else:
@@ -77,6 +77,7 @@ def kaggle_map(
     Returns:
         tuple: (mAP, [dict, dict, ...])
     """
+    eps=1e-9
     assert len(det_results) == len(annotations)
 
     num_imgs = len(det_results)
@@ -89,31 +90,45 @@ def kaggle_map(
         cls_dets, cls_gts, _ = get_cls_results(det_results, annotations, i)
         # compute tp and fp for each image with multiple processes
         aps_by_thrs = []
+        p_by_thrs=[]
+        r_by_thrs=[]
         aps_by_sample = np.zeros(num_imgs)
         for iou_thr in iou_thrs:
             tpfpfn = pool.starmap(calc_tpfpfn, zip(cls_dets, cls_gts, [iou_thr for _ in range(num_imgs)]))
-            iou_thr_aps = np.array([tp / (tp + fp + fn) for tp, fp, fn in tpfpfn])
+            iou_thr_aps = np.array([tp / (tp + fp + fn+eps) for tp, fp, fn in tpfpfn])
+            iou_thr_p=np.array([tp / (tp + fp+eps) for tp, fp, fn in tpfpfn])
+            iou_thr_r=np.array([tp / (tp + fn+eps) for tp, fp, fn in tpfpfn])
             if by_sample:
                 aps_by_sample += iou_thr_aps
             aps_by_thrs.append(np.mean(iou_thr_aps))
+            p_by_thrs.append(np.mean(iou_thr_p))
+            r_by_thrs.append(np.mean(iou_thr_r))
         eval_results.append(
             {
                 "num_gts": len(cls_gts),
                 "num_dets": len(cls_dets),
                 "ap": np.mean(aps_by_thrs),
+                'p':np.mean(p_by_thrs),
+                'r':np.mean(r_by_thrs),
                 "ap_by_sample": None if not by_sample else aps_by_sample / len(iou_thrs),
             }
         )
     pool.close()
 
     aps = []
+    ps=[]
+    rs=[]
     for cls_result in eval_results:
         if cls_result["num_gts"] > 0:
             aps.append(cls_result["ap"])
+            ps.append(cls_result["p"])
+            rs.append(cls_result["r"])
     mean_ap = np.array(aps).mean().item() if aps else 0.0
+    mean_p = np.array(ps).mean().item() if ps else 0.0
+    mean_r = np.array(rs).mean().item() if rs else 0.0
 
-    print_log(f"\nKaggle mAP: {mean_ap}", logger=logger)
-    return mean_ap, eval_results
+    print_log(f"\nKaggle mAP: {mean_ap},P：{mean_p},R:{mean_r}", logger=logger)
+    return mean_ap,mean_p,mean_r,eval_results
 
 import torch
 
@@ -290,7 +305,7 @@ def kaggle_map_yolov3(
     if len(stats):
         p, r, ap, f1, ap_class = ap_per_class(*stats)
         if niou > 1:
-            p, r, ap, f1 = p[:, 0], r[:, 0], ap.mean(1), ap[:, 0]  # [P, R, AP@0.5:0.95, AP@0.5]
+            p, r, ap, f1 = p[:, 0], r[:, 0], ap.mean(1), f1.mean(1)  # [P, R, AP@0.5:0.95, AP@0.5]
         mp, mr, map, mf1 = p.mean(), r.mean(), ap.mean(), f1.mean()
         nt = np.bincount(stats[3].astype(np.int64), minlength=1)  # number of targets per class
     else:

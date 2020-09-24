@@ -22,8 +22,13 @@ class WheatDataset1(CocoDataset):
 
     def evaluate(self, results, logger=None, iou_thrs=(0.5, 0.55, 0.6, 0.65, 0.7, 0.75), **kwargs):
         annotations = [self.get_ann_info(i) for i in range(len(self))]
-        mp, mr, map, mf1 = kaggle_map_yolov3(results, annotations, iou_thrs=iou_thrs, logger=logger)
-        return dict(mp=mp, mR=mr, mAP=map, mAP50=mf1)
+
+        # mp1, mr1, map1, mf11 = kaggle_map_yolov3(results, annotations, iou_thrs=iou_thrs, logger=logger)
+        map,mp,mr,_=kaggle_map(results, annotations, iou_thrs=iou_thrs, logger=logger)
+        # print(f'yolomap:{map1},mp:{mp1},mr:{mr1},mf1:{mf11}')
+        print(f'kagglemap:{map},mp:{mp},mr:{mr}')
+        # return dict(mp=mp, mR=mr, mAP=map, mAP50=mf1)
+        return dict(mp=mp, mR=mr, mAP=map)
 
     def format_results(self, results, output_path=None, **kwargs):
         assert isinstance(results, list), "results must be a list"

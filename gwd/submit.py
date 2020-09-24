@@ -13,7 +13,7 @@ def parse_args():
     parser.add_argument(
         "--configs",
         default=[
-            "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/configs/detectors/detectors_r50_ga_mstrain_stage0.py",
+            "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/configs/fcos/fcos_center-normbbox-centeronreg-giou_r50_caffe_fpn_gn-head_4x4.py",
             # "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/configs/detectors/detectors_r50_ga_mstrain_stage0.py"
             # "configs/universe_spike/universe_r50_mstrain_spike_stage1.py",
         ],
@@ -22,7 +22,7 @@ def parse_args():
     parser.add_argument(
         "--checkpoints",
         default=[
-            "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/mosaic/work_dirs/detectors_r50_ga_mstrain_stage0/0/epoch_48.pth",
+            "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/mosaic/work_dirs/fcos_center-normbbox-centeronreg-giou_r50_caffe_fpn_gn-head_4x4/0/epoch_60.pth",
             # "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/mosaic/work_dirs/detectors_r50_ga_mstrain_stage0/0/epoch_44.pth"
             # "/dumps/universe_r50_mstrain_spike_stage1_epoch_12.pth",
         ],
@@ -32,7 +32,7 @@ def parse_args():
     parser.add_argument("--submission_path", default="/home/ubuntu/data/test_submission.csv")
     parser.add_argument("--pseudo_path", default="/home/ubuntu/data/coco_pseudo_test.json")
     parser.add_argument("--iou_thr", default=0.55, type=float)
-    parser.add_argument("--score_thr", default=0.45, type=float)
+    parser.add_argument("--score_thr", default=0.05, type=float)
     return parser.parse_args()
 
 
@@ -64,6 +64,9 @@ def main(
             format_only=format_only,
             options=dict(output_path=submission_path),
             flip=flip,
+            show=True,
+            show_dir='/home/ubuntu/data/',
+            show_score_thr=0.05
         )
         all_predictions.append(predictions)
     if len(all_predictions) > 1:
