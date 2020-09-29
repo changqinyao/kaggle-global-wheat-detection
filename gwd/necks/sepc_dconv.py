@@ -2,10 +2,10 @@ import torch
 import torch.nn as nn
 from torch.nn.modules.utils import _pair
 
-from mmdet.ops import DeformConv, ModulatedDeformConv, deform_conv, modulated_deform_conv
+from mmdet.ops import DeformConv2d, ModulatedDeformConv2d, deform_conv2d, modulated_deform_conv2d
 
 
-class SEPCConv(DeformConv):
+class SEPCConv(DeformConv2d):
     def __init__(self, *args, part_deform=False, **kwargs):
         super(SEPCConv, self).__init__(*args, **kwargs)
         self.part_deform = part_deform
@@ -41,12 +41,12 @@ class SEPCConv(DeformConv):
             )
 
         offset = self.conv_offset(x)
-        return deform_conv(
+        return deform_conv2d(
             x, offset, self.weight, self.stride, self.padding, self.dilation, self.groups, self.deformable_groups
         ) + self.bias.unsqueeze(0).unsqueeze(-1).unsqueeze(-1)
 
 
-class ModulatedSEPCConv(ModulatedDeformConv):
+class ModulatedSEPCConv(ModulatedDeformConv2d):
 
     _version = 2
 
@@ -89,7 +89,7 @@ class ModulatedSEPCConv(ModulatedDeformConv):
         offset = torch.cat((o1, o2), dim=1)
         mask = torch.sigmoid(mask)
 
-        return modulated_deform_conv(
+        return modulated_deform_conv2d(
             x,
             offset,
             mask,

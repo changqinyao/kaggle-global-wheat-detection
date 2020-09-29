@@ -8,5 +8,5 @@ _base_ = [
 data = dict(samples_per_gpu=6)
 optimizer = dict(lr=0.03)
 optimizer_config = dict(_delete_=True, grad_clip=dict(max_norm=35, norm_type=2))
-load_from = "/dumps/universenet101_gfl_fp16_4x4_mstrain_480_960_2x_coco_20200716_epoch_24-1b9a1241.pth"
+load_from = "/home/ubuntu/PycharmProjects/kaggle-global-wheat-detection/dumps/universenet101_gfl_fp16_4x4_mstrain_480_960_2x_coco_20200716_epoch_24-1b9a1241.pth"
 fp16 = dict(loss_scale=512.0)
